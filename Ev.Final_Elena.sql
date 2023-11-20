@@ -268,7 +268,18 @@ INNER JOIN film_actor AS fa2 ON f.film_id = fa2.film_id
 INNER JOIN actor AS a2 ON fa2.actor_id = a2.actor_id
 WHERE a1.first_name!=a2.first_name and a1.last_name!=a2.last_name; -- Quito los que son el mismo actor en a1 y a2
 
--- Cláusulas adicionales "where" no funcionan
+-- Combinación de parejas -- intento 1
+SELECT f.film_id, f.title, concat(a1.first_name," ", a1.last_name) AS "actor1", concat(a2.first_name," ", a2.last_name) AS "actor2"
+FROM film AS f
+INNER JOIN film_actor AS fa1 ON f.film_id = fa1.film_id 
+INNER JOIN actor AS a1 ON fa1.actor_id = a1.actor_id
+INNER JOIN film_actor AS fa2 ON f.film_id = fa2.film_id 
+INNER JOIN actor AS a2 ON fa2.actor_id = a2.actor_id
+WHERE a1.first_name!=a2.first_name and a1.last_name!=a2.last_name
+AND a1.first_name=a2.first_name and a1.last_name=a2.last_name and a2.first_name=a1.first_name and a2.last_name=a1.last_name
+GROUP BY f.film_id;  
+
+--  Combinación de parejas -- intento 2 - Cláusulas adicionales "where" no funcionan
 SELECT f.film_id, f.title, concat(a1.first_name," ", a1.last_name) AS "actor1", concat(a2.first_name," ", a2.last_name) AS "actor2"
 FROM film AS f
 INNER JOIN film_actor AS fa1 ON f.film_id = fa1.film_id -- la tabla intermedia tb tiene q estar 2 veces
@@ -289,27 +300,3 @@ ORDER BY n DESC;
 -- LIMIT 1 -- este es para indicar la pareja que han trabajdo más juntas
 
 -- Dudas: a. cómo eliminar las parejas repetidas en esta última query y 2. cómo hacer el ejercicio sin parejas
-
-
-
-
-
-
-
-INNER JOIN film
-JOIN movie_cast 
-  ON movie_cast.mov_id=movie.mov_id 
-JOIN actor 
-  ON movie_cast.act_id=actor.act_id
-WHERE actor.act_id IN (
-SELECT act_id 
-FROM movie_cast 
-GROUP BY act_id HAVING COUNT(*)>=2);
-
-SELECT f.film_id, f.title, concat(a1.first_name," ", a1.last_name) AS "actor1", concat(a2.first_name," ", a2.last_name) AS "actor2"
-FROM film AS f
-INNER JOIN film_actor AS fa1 ON f.film_id = fa1.film_id 
-INNER JOIN actor AS a1 ON fa1.actor_id = a1.actor_id
-INNER JOIN film_actor AS fa2 ON f.film_id = fa2.film_id 
-INNER JOIN actor AS a2 ON fa2.actor_id = a2.actor_id
-WHERE a1.first_name!=a2.first_name and a1.last_name!=a2.last_name; -- Quito los que son el mismo actor en a1 y a2
